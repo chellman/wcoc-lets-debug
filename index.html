@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Let's Debug For Real!</title>
+
+		<meta name="description" content="An introduction to debugging your code">
+		<meta name="author" content="Joe Chellman">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/fullscreen-img.css">
+		<link rel="stylesheet" href="css/theme/moon.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		
+		<style type="text/css">
+		    .reveal h1,
+		    .reveal h2,
+		    .reveal h3 {
+		        text-transform: none;
+		    }
+		    
+		    .reveal .footer {
+              position: absolute;
+              bottom: 1em;
+              margin: 0 auto;
+              width: 50%;
+              left: 25%;
+              font-size: 0.4em;
+              text-align: center;
+              z-index: 1000;
+              opacity: 0.5;
+		    }
+		    
+		    .footer .mark {
+		        width: 131px;
+		        height: auto;
+		        margin-bottom: 0.25em;
+		    }
+		</style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Let’s Debug For Real!</h1>
+					<h2>Part 2 in the “Braver, Faster, Better” series<br>
+					<small>that I just made up</small></h2>
+					<p>
+						<small>Joe Chellman<br>
+						<a href="http://twitter.com/shooflydesign">@shooflydesign</a></small>
+					</p>
+				</section>
+				    
+                <section>
+                    <p>
+                    Slides are available:<br>
+                    <a href="http://www.shooflydesign.org/files/wcoc-2015/">shooflydesign.org/files/wcoc-2015</a><br>
+                    <a href="https://github.com/chellman/wcoc-lets-debug">github.com/chellman/wcoc-lets-debug</a>
+                    </p>
+                </section>
+				
+				<section>
+				    <section>
+				    <h1>Who Am I?</h1>
+				    </section>
+
+                    <section>
+                        <h2>Who Are You?</h2>
+                        
+                        <p>Any or all of the following:</p>
+                        
+                        <ul>
+                            <li class="fragment">Theme author</li>
+                            <li class="fragment">Plugin developer</li>
+                            <li class="fragment">Just curious how WordPress works</li>
+                        </ul>
+
+                    </section>
+				</section>
+
+				<section>
+				    <section>
+					<h1>What is a debugger and why do I need one?</h1>
+					
+                    <p class="fragment">
+                    (PHP and JavaScript)<br><small class="fragment">(for today, mostly PHP)</small>
+                    </p>
+					
+				    </section>
+				    
+				    <section fullscreen-img="img/sunset.jpg">
+				        <p>
+				        Why: to achieve zen-like calm
+				        </p>
+				    </section>
+					
+					<section>
+						<p>
+						A debugger is software that lets you closely inspect what's happening in other software in real-time.
+						</p>
+						
+						<p>
+						It helps you find bugs and get rid of them.
+						</p>
+
+					</section>
+					
+					<section>
+						<h2>Without a debugger</h2>
+						
+						<ul>
+                            <li class="fragment"><code>WP_DEBUG</code></li>
+                            <li class="fragment"><code>error_reporting(E_ALL);</code></li>
+                            <li class="fragment"><code>print_r($myVar); var_dump($myVar);</code></li>
+                            <li class="fragment"><code>console.log(myObj); console.dir(myObj);</code></li>
+                        </ul>
+
+					</section>
+					
+					<section>
+						<h2>With a debugger</h2>
+						
+						<ul>
+                            <li class="">All of the above plus:</li>
+                            <li class="fragment">Pause (and continue) execution at any point</li>
+                            <li class="fragment">Step through code by lines or chunks</li>
+                            <li class="fragment">See all currently defined variables</li>
+                            <li class="fragment">Inspect the value of any variable (over time)</li>
+                            <li class="fragment">Overall: <em>much</em> less guessing</li>
+                        </ul>
+					</section>
+				</section>
+				
+				<section>
+				    <section>
+                        <h1>Jargon</h1>
+				    
+                        <ul>
+                            <li class="fragment">IDE</li>
+                            <li class="fragment">Breakpoint</li>
+                            <li class="fragment">Step [Into/Out/Over]</li>
+                            <li class="fragment">Watch</li>
+                            <li class="fragment">Call Stack</li>
+                        </ul>
+				    </section>
+				</section>
+				
+				<section>
+				    <section>
+                        <h1>Software Prereqs</h1>
+				    </section>
+				    
+				    <section>
+				        <h2>PHP</h2>
+				        
+				        <ul>
+				            <li class="fragment"><a href="http://www.xdebug.org/">XDebug</a></li>
+                            <li class="fragment"><a href="http://phpdbg.com/">phpdbg</a> with PHP 5.6 (cli)</li>
+                            
+                            <li class="fragment"><a href="https://serverpress.com/get-desktopserver/">DesktopServer</a> (free/$)</li>
+                            <li class="fragment"><a href="https://www.mamp.info/en/">MAMP</a> (free/$)</li>
+                        </ul>
+				    </section>
+				    
+				    <section>
+				        <h2>Browser Extensions (optional)</h2>
+				        
+				        <p>
+				        Make the IDE ⟷ XDebug connection easier
+				        </p>
+				        
+				        <ul>
+				            <li class="fragment"><a href="https://github.com/mac-cain13/xdebug-helper-for-chrome">XDebug Helper for Chrome</a></li>
+                            <li class="fragment"><a href="https://addons.mozilla.org/en-US/firefox/addon/the-easiest-xdebug/">Easiest XDebug for Firefox</a></li>
+                            
+                            <li class="fragment"><a href="https://github.com/benmatselby/xdebug-toggler">XDebug Toggler for Safari</a></li>
+                        </ul>
+				    </section>
+				    
+				    <section>
+				    
+                        <h2>IDEs</h2>
+                    
+                        <p>
+                        A good IDE is very, very good
+                        </p>
+                    
+                        <ul>
+                            <li class="fragment"><a href="https://www.jetbrains.com/phpstorm/">PhpStorm</a> ($, free trial)</li>
+                            <li class="fragment"><a href="https://netbeans.org/">NetBeans</a> (free)</li>
+                            <li class="fragment"><a href="http://projects.eclipse.org/projects/tools.pdt">Eclipse</a> (free)</li>
+                        </ul>
+                    
+				    </section>
+					
+					<section>
+						<h2>Why an IDE is nice</h2>
+						
+						<ul>
+                            <li class="fragment">Fabulous code completion</li>
+                            <li class="fragment">Mistake avoidance (warnings, inspections)</li>
+                            <li class="fragment">Full project navigation (go to X)</li>
+                            <li class="fragment">PHP and JavaScript debugging together</li>
+                            <li class="fragment">Help when refactoring</li>
+                        </ul>
+					</section>
+				    
+				    <section>				    
+                        <h2>Not-IDEs</h2>
+                    
+                        <ul>
+                            <li class="fragment"><a href="https://github.com/martomo/SublimeTextXdebug">XDebug for Sublime Text</a></li>
+                            <li class="fragment"><a href="https://www.bluestatic.org/software/macgdbp/">MacGBPp</a></li>
+                        </ul>
+				    </section>
+				    
+				    <section>				    
+                        <h2>JavaScript</h2>
+
+                        <ul>
+                            <li class="fragment"><a href="https://developer.chrome.com/devtools/docs/javascript-debugging">Chrome Dev Tools</a>
+                                <ul>
+                                    <li class="fragment">(with <a href="https://developer.chrome.com/devtools/docs/remote-debugging">Remote Debugging for Android</a>)</li>
+                                    <li class="fragment"><a href="https://github.com/google/ios-webkit-debug-proxy">iOS WebKit Debug Proxy</a></li>
+                                </ul>
+                            </li>
+                            <li class="fragment"><a href="http://getfirebug.com/javascript">Firebug</a></li>
+                            <li class="fragment"><a href="https://developer.apple.com/library/safari/documentation/AppleApplications/Conceptual/Safari_Developer_Guide/Introduction/Introduction.html">Safari</a>
+                                <ul>
+                                    <li class="fragment">(with Xcode &amp; iOS Simulator or <a href="http://stackoverflow.com/questions/11262236/ios-remote-debugging/12607124#12607124">actual device</a>)</li>
+                                </ul>
+                            <li class="fragment"><a href="https://msdn.microsoft.com/library/bg182326(v=vs.85)">F12 Dev Tools</a></li>
+                        </ul>
+				    </section>
+				</section>
+				
+				<section>
+				    <section>
+				        <h1>DEMO!</h1>
+				    </section>
+				    				    
+                    <section>
+                        <h2>My Setup Today</h2>
+                    
+                        <p class="fragment">
+                        IDE: <a href="https://confluence.jetbrains.com/display/PhpStorm/PhpStorm+Early+Access+Program">PhpStorm 9 EAP</a>
+                        </p>
+                    
+                        <p class="fragment">
+                        Stack: <a href="http://mamp.info/">MAMP Pro</a>
+                        </p>
+                    
+                        <p class="fragment">
+                        Browser: Chrome<br>
+                        (and the <a href="https://developer.chrome.com/devtools">Developer Tools</a>)
+                        </p>
+                    </section>
+                
+                    <section>
+                        <h2>Or: DesktopServer</h2>
+                    
+                        <img src="img/DS-Debug-Trace-annotated.png" width="776" height="598" alt="DS-Debug-Trace">
+                    </section>
+                    
+                    <section>
+                        <h2>Or: manual (php.ini)</h2>
+                        
+                        <pre>
+xdebug.remote_enable=1
+xdebug.remote_host=localhost
+xdebug.remote_port=9000        
+xdebug.remote_autostart=1
+xdebug.idekey="PHPSTORM"
+                        </pre>
+                    </section>
+				</section>
+				
+				
+				<section>
+				    <h2>Next Steps</h2>
+				    
+				    <ul>
+                        <li class="fragment">Version control</li>
+                        <li class="fragment">Really remote debugging</li>
+                        <li class="fragment">Testing frameworks</li>
+                    </ul>
+				</section>
+				
+				<section>
+				    <h1>Questions, Comments, Answers, or Problems?</h1>
+				</section>
+
+				<section>
+					<h1>Thank you!</h1>
+				</section>
+
+			</div>
+		
+		<footer class="footer">
+		    <a href="http://www.shoofly.us/"><img src="img/ShooFly-Logo-Light.png" class="mark"></a><br>
+		    <a href="http://twitter.com/shooflydesign">@shooflydesign</a>
+		</footer>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'fade', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true },
+                    { src: 'lib/js/fullscreen-img.js' }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
